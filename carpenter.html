@@ -1,0 +1,784 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NearSeva - Instant Service</title>
+    <style>
+        /* --- General Reset & Fonts --- */
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&display=swap');
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #eef1f5; 
+            margin: 0;
+            padding: 0;
+            color: #333;
+            line-height: 1.6;
+            padding-top: 70px; /* Space for the fixed Navbar */
+        }
+        
+        /* --- NAVIGATION BAR STYLES --- */
+        .navbar {
+            background-color: #ffffff;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            z-index: 999;
+            box-sizing: border-box;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 20px;
+        }
+
+        .nav-header {
+            display: flex;
+            align-items: center;
+        }
+        
+        .logo-link {
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+            color: #193d6a;
+        }
+
+        .logo-image {
+            height: 35px;
+            width: 35px;
+            object-fit: contain;
+            border-radius: 5px;
+            margin-right: 8px;
+        }
+
+        .logo-text {
+            font-size: 1.6em;
+            font-weight: 700;
+        }
+
+        .nav-links-container {
+            display: flex; 
+            align-items: center;
+        }
+
+        .nav-link {
+            text-decoration: none;
+            color: #3f51b5; 
+            font-weight: 600;
+            padding: 8px 12px;
+            margin: 0 5px;
+            border-radius: 6px;
+            transition: background-color 0.3s, color 0.3s;
+            white-space: nowrap; 
+        }
+
+        /* Home link specific style */
+        .nav-link.home-link {
+            color: #193d6a;
+            font-weight: 700;
+        }
+
+        .nav-link:hover {
+            background-color: #e0e7f7;
+            color: #193d6a;
+        }
+
+        .hamburger {
+            display: none; 
+            background: none;
+            border: none;
+            color: #193d6a;
+            font-size: 24px;
+            cursor: pointer;
+            padding: 5px;
+            margin-right: 15px;
+        }
+
+        .contact-link {
+            background-color: #27ae60; 
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            margin-left: 15px;
+            transition: background-color 0.3s;
+            display: inline-block; /* Ensure visibility on desktop */
+        }
+
+        .contact-link:hover {
+            background-color: #229954;
+            color: white;
+        }
+
+        /* --- MOBILE NAV STYLES --- */
+        @media (max-width: 768px) {
+            body {
+                padding-top: 100px; 
+            }
+            .navbar {
+                flex-wrap: wrap; 
+                padding: 10px 15px;
+            }
+            .hamburger {
+                display: block; 
+            }
+            .nav-header {
+                width: 100%;
+                justify-content: space-between;
+            }
+            .nav-links-container {
+                display: none; 
+                flex-direction: column;
+                width: 100%;
+                overflow: hidden;
+                transition: max-height 0.3s ease-in-out;
+                max-height: 0; 
+            }
+            .nav-links-container.active {
+                display: flex; 
+                max-height: 400px; /* Increased height for all links */
+                margin-top: 10px;
+                padding-bottom: 10px;
+                border-top: 1px solid #eee;
+            }
+            .nav-link, .contact-link {
+                width: 95%; 
+                margin: 5px auto;
+                text-align: center;
+                box-sizing: border-box;
+                display: block;
+            }
+        }
+
+        /* --- Tagline H1 (UNCHANGED) --- */
+        h1 {
+            text-align: center;
+            color: #193d6a; 
+            margin: 40px 0 30px;
+            font-weight: 700;
+            font-size: 2.2em;
+        }
+
+        /* --- Provider Grid & Card Styles (UNCHANGED) --- */
+        .provider-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 25px;
+            max-width: 1300px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        .provider-card {
+            background-color: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08); 
+            padding: 25px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            transition: transform 0.3s, box-shadow 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+        .provider-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 12px 28px rgba(0, 0, 0, 0.15);
+        }
+        .category-badge {
+            position: absolute;
+            top: 0;
+            right: 0;
+            background-color: #d4ac0d; 
+            color: white;
+            padding: 5px 15px;
+            border-bottom-left-radius: 12px;
+            font-size: 0.85em;
+            font-weight: 600;
+        }
+        .provider-image {
+            width: 110px;
+            height: 110px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-bottom: 15px;
+            border: 4px solid #193d6a; 
+        }
+        .provider-card h2 {
+            margin: 5px 0 5px;
+            color: #222; 
+            font-size: 1.6em;
+            font-weight: 600;
+        }
+        .provider-card p {
+            margin: 0;
+            font-size: 0.95em;
+            color: #6a7486; 
+        }
+        .location {
+            margin-bottom: 15px;
+        }
+        .rating {
+            font-size: 1.1em;
+            color: #f39c12; 
+            font-weight: 700;
+            margin: 10px 0 20px;
+            display: flex;
+            align-items: center;
+        }
+        .rating-number {
+            color: #333;
+            margin-left: 8px;
+            font-weight: 600;
+        }
+        .review-count {
+            font-size: 0.85em;
+            color: #6a7486;
+            margin-left: 10px;
+            font-weight: 400;
+        }
+        .see-more-btn {
+            background-color: #3f51b5; 
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 8px;
+            cursor: pointer;
+            width: 100%;
+            font-size: 1em;
+            font-weight: 600;
+            transition: background-color 0.3s, transform 0.1s;
+        }
+        .see-more-btn:hover {
+            background-color: #30409a;
+        }
+        .see-more-btn:active {
+            transform: scale(0.98);
+        }
+
+        /* --- MODAL STYLES (UNCHANGED) --- */
+        .detail-modal {
+            display: none; 
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100vw; 
+            height: 100vh; 
+            background-color: rgba(0, 0, 0, 0.6); 
+            overflow-y: auto; 
+            overflow-x: hidden; 
+            padding-top: 20px; 
+            box-sizing: border-box; 
+        }
+        .modal-content {
+            background-color: #ffffff;
+            margin: 5vh auto 20px auto; 
+            padding: 15px;
+            border-radius: 18px; 
+            width: 90%; 
+            max-width: 650px; 
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4); 
+            position: relative;
+        }
+        
+        /* --- Small Contact Modal Styling (UNCHANGED) --- */
+        .small-modal {
+            display: none; 
+            position: fixed;
+            z-index: 1050; 
+            left: 0;
+            top: 0;
+            width: 100vw;
+            height: 100vh;
+            background-color: rgba(0, 0, 0, 0.4); 
+            overflow: hidden;
+        }
+        .small-modal-content {
+            background-color: #ffffff;
+            margin: 15% auto; 
+            padding: 25px;
+            border-radius: 10px;
+            width: 80%;
+            max-width: 350px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            position: relative;
+            text-align: center;
+        }
+        .small-modal-content h3 {
+            color: #193d6a; 
+            margin-top: 0;
+        }
+        .contact-link-modal {
+            display: block;
+            padding: 10px;
+            margin-top: 10px;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: background-color 0.2s;
+        }
+        .phone-link {
+            background-color: #3f51b5; 
+            color: white;
+        }
+        .whatsapp-link {
+            background-color: #27ae60; 
+            color: white;
+        }
+        .phone-link:hover { background-color: #30409a; }
+        .whatsapp-link:hover { background-color: #229954; }
+        .close-btn {
+            color: #333;
+            position: absolute;
+            top: 15px;
+            right: 25px;
+            font-size: 30px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+        .close-btn:hover {
+            color: #193d6a; 
+        }
+        .modal-header {
+            text-align: center;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #eee;
+        }
+        .modal-header .provider-image {
+            width: 150px;
+            height: 150px;
+        }
+        .modal-header h2 {
+            font-size: 2em;
+            margin-top: 10px;
+        }
+        .modal-header .contact-info {
+            font-size: 1.1em;
+            color: #d4ac0d; 
+            margin-top: 5px;
+        }
+        .detail-section h3 {
+            background-color: #f4f6f9; 
+            color: #193d6a; 
+            padding: 10px 15px;
+            border-radius: 8px;
+            margin-top: 30px;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+
+        /* --- Services Table (UNCHANGED) --- */
+        .service-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+        }
+        .service-table th, .service-table td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #e5e8ed; 
+            white-space: normal; 
+            word-break: break-word; 
+        }
+        .service-table th {
+            background-color: #e0e7f7; 
+            color: #193d6a; 
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.9em;
+        }
+        .service-table tr:last-child td {
+            border-bottom: none;
+        }
+        .service-table td:last-child {
+            font-weight: 600;
+            color: #27ae60; 
+        }
+
+        /* --- Reviews Styling (UNCHANGED) --- */
+        .review-box {
+            border-left: 4px solid #d4ac0d; 
+            padding: 15px;
+            margin-bottom: 15px;
+            border-radius: 5px;
+            background-color: #fffaf5; 
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+        }
+        .review-box p {
+            margin: 0;
+            font-size: 0.95em;
+        }
+        .review-box .user-info {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 5px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .review-rating {
+            color: #f39c12; 
+            font-size: 1.1em;
+        }
+        .review-date {
+            font-size: 0.75em;
+            color: #999;
+            margin-top: 5px;
+            text-align: right;
+        }
+
+        /* --- BOTTOM CONTACT CTA SECTION (ADDED BACK) --- */
+        .contact-cta-section {
+            background-color: #3f51b5; /* Primary Blue */
+            color: white;
+            padding: 60px 20px;
+            text-align: center;
+            margin-top: 50px;
+        }
+        .cta-title {
+            font-size: 2.5em;
+            font-weight: 800;
+            margin-bottom: 10px;
+        }
+        .cta-subtitle {
+            font-size: 1.2em;
+            margin-bottom: 30px;
+            opacity: 0.9;
+        }
+        .cta-button {
+            background-color: #27ae60; /* Green for Action */
+            color: white;
+            text-decoration: none;
+            padding: 15px 35px;
+            border-radius: 8px;
+            font-size: 1.2em;
+            font-weight: 700;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            display: inline-block;
+        }
+        .cta-button:hover {
+            background-color: #229954;
+        }
+
+        /* --- FOOTER STYLES (ADDED BACK) --- */
+        .footer {
+            background-color: #193d6a; /* Dark Blue */
+            color: #eef1f5;
+            text-align: center;
+            padding: 20px 0;
+            font-size: 0.9em;
+        }
+        .footer p {
+            margin: 0;
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar">
+        <div class="nav-header">
+            <button class="hamburger" onclick="toggleMenu()">☰</button>
+            <a href="#" class="logo-link">
+                <img src="https://i.ibb.co/SDpLTccw/79e8f8f4-7a6b-4c8a-9e5d-f419af08ce56.webp" alt="NearSeva Logo" class="logo-image">
+                <span class="logo-text">NearSeva</span>
+            </a>
+        </div>
+        <div class="nav-links-container" id="navLinks">
+            <a href="index.html" class="nav-link home-link">🏠 Home</a> 
+            <a href="electrician.html" class="nav-link">💡 Electrician</a>
+            <a href="plumber.html" class="nav-link">🚿 Plumber</a>
+            <a href="repair.html" class="nav-link">❄️ AC/Fridge/WM Repair</a>
+            <a href="carpenter.html" class="nav-link">🪑 Carpenter</a>
+            <a href="#" class="nav-link contact-link" onclick="showContactModal(); return false;">📞 Contact Us</a>
+        </div>
+    </nav>
+    
+    <h1>तुरंत सेवा, आपके दरवाज़े पर (Instant Service, At Your Doorstep)</h1>
+
+    <div class="provider-list" id="providerList">
+        </div>
+
+    <div class="contact-cta-section">
+        <h2 class="cta-title">आपकी सेवा, हमारा वादा!</h2>
+        <p class="cta-subtitle">अभी बुकिंग करें या हमारी टीम से सीधे बात करें।</p>
+        <a href="#" class="cta-button" onclick="showContactModal(); return false;">📞 अभी संपर्क करें</a>
+    </div>
+
+    <footer class="footer">
+        <p>&copy; 2025 NearSeva. All rights reserved. | Instant Home Services in Dhanbad.</p>
+    </footer>
+
+    <div id="detailModal" class="detail-modal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeModal()">&times;</span>
+            <div id="modalDetails">
+                </div>
+        </div>
+    </div>
+
+    <div id="contactModal" class="small-modal">
+        <div class="small-modal-content">
+            <span class="close-btn" onclick="closeContactModal()">&times;</span>
+            <div id="contactDetails">
+                </div>
+        </div>
+    </div>
+
+    <script>
+const providers = [
+    {
+        "Category": "Carpenter",
+        "Name": "Ramesh Kumar",
+        "PhoneNumber": "+91-9876543210",
+        "Image": "https://i.ibb.co/ycN9HRgp/images-27.jpg",
+        "Address": "Maintaind",
+        "Services": [
+            { "service": "Leak repair (tap/pipe)", "price": "₹300" },
+            { "service": "Bathroom fitting (toilet/seat)", "price": "₹1200" },
+            { "service": "Clog cleaning (drain)", "price": "₹500" }
+        ],
+        "Reviews": [
+            { "user": "Seema", "rating": 5, "comment": "Time par aaya aur kaam achha kiya.", "date": "2025-11-05" },
+            { "user": "Ravi", "rating": 4, "comment": "Thoda mehnga laga par quality theek thi.", "date": "2025-10-20" }
+        ]
+    },
+    {
+        "Category": "Carpenter",
+        "Name": "Suresh Yadav",
+        "PhoneNumber": "+91-9123456780",
+        "Image": "https://i.ibb.co/gMYX4x4W/images-28.jpg",
+        "Address": "Barmasia",
+        "Services": [
+            { "service": "Wiring repair/short circuit fix", "price": "₹400" },
+            { "service": "Fan/Light installation", "price": "₹250" },
+            { "service": "Switch/Socket replacement", "price": "₹150" }
+        ],
+        "Reviews": [
+            { "user": "Anita", "rating": 5, "comment": "Kaam safe aur neat, recommendation.", "date": "2025-11-01" },
+            { "user": "Manoj", "rating": 4, "comment": "Jaldi fix kar diya. Responsive.", "date": "2025-09-12" }
+        ]
+    },
+    {
+        "Category": "Carpenter",
+        "Name": "Anil Sharma",
+        "PhoneNumber": "+91-9988776655",
+        "Image": "https://i.ibb.co/Jw5bP3xc/images-29.jpg",
+        "Address": "Maintaind",
+        "Services": [
+            { "service": "Home electrical inspection", "price": "₹600" },
+            { "service": "Meter fault diagnosis", "price": "₹350" },
+            { "service": "LED/Tube light fitting", "price": "₹200" }
+        ],
+        "Reviews": [
+            { "user": "Priya", "rating": 5, "comment": "Inspection detailed tha, sab bataya.", "date": "2025-10-28" },
+            { "user": "Sunil", "rating": 3, "comment": "Thoda late aaye par kaam sahi hua.", "date": "2025-08-05" }
+        ]
+    },
+    {
+        "Category": "Carpenter",
+        "Name": "Binod mahto",
+        "PhoneNumber": "+91-657890651",
+        "Image": "https://i.ibb.co/qYjcpwjG/images-30.jpg",
+        "Address": "Barmasia",
+        "Services": [
+            { "service": "Appliance repair (65W-2000W)", "price": "₹500" },
+            { "service": "Earthing check & fix", "price": "₹450" }
+        ],
+        "Reviews": [
+            { "user": "Geeta", "rating": 4, "comment": "Appliance theek kar diya, price fair.", "date": "2025-07-19" },
+            { "user": "Vikram", "rating": 4, "comment": "Professional behaviour, recommended.", "date": "2025-06-30" }
+        ]
+    },
+    {
+        "Category": "Carpenter",
+        "Name": "Saroj sinha",
+        "PhoneNumber": "+91-6887890651",
+        "Image": "https://i.ibb.co/gL8kQwpR/images-31.jpg",
+        "Address": "Maintaind",
+        "Services": [
+            { "service": "Water heater installation", "price": "₹1500" },
+            { "service": "Pipe replacement (per meter)", "price": "₹200" },
+            { "service": "General maintenance package (visit)", "price": "₹350" }
+        ],
+        "Reviews": [
+            { "user": "Kavita", "rating": 5, "comment": "Boht acha service, polite aur helpful.", "date": "2025-11-03" },
+            { "user": "Ajay", "rating": 4, "comment": "Maintenance package value for money.", "date": "2025-09-02" }
+        ]
+    },
+    {
+        "Category": "Carpenter",
+        "Name": "Saroj sinha",
+        "PhoneNumber": "+91-6887890651",
+        "Image": "https://i.ibb.co/gL8kQwpR/images-31.jpg",
+        "Address": "Maintaind",
+        "Services": [
+            { "service": "Water heater installation", "price": "₹1500" },
+            { "service": "Pipe replacement (per meter)", "price": "₹200" },
+            { "service": "General maintenance package (visit)", "price": "₹350" }
+        ],
+        "Reviews": [
+            { "user": "Kavita", "rating": 5, "comment": "Boht acha service, polite aur helpful.", "date": "2025-11-03" },
+            { "user": "Ajay", "rating": 4, "comment": "Maintenance package value for money.", "date": "2025-09-02" }
+        ]
+    }
+];
+
+        // --- JS Functions (UNCHANGED) ---
+        function toggleMenu() {
+            const navLinks = document.getElementById('navLinks');
+            navLinks.classList.toggle('active');
+        }
+
+        function renderStars(rating) {
+            const fullStar = '★';
+            const emptyStar = '☆';
+            const roundedRating = Math.round(rating);
+            return fullStar.repeat(roundedRating) + emptyStar.repeat(5 - roundedRating);
+        }
+
+        function getAverageRating(reviews) {
+            if (!reviews || reviews.length === 0) return 0;
+            const total = reviews.reduce((sum, review) => sum + review.rating, 0);
+            return (total / reviews.length).toFixed(1);
+        }
+
+        function renderProviderList() {
+            const listContainer = document.getElementById('providerList');
+            listContainer.innerHTML = ''; 
+
+            providers.forEach((provider, index) => {
+                const avgRating = getAverageRating(provider.Reviews);
+                
+                const cardHTML = `
+                    <div class="provider-card">
+                        <span class="category-badge">${provider.Category}</span>
+                        <img src="${provider.Image}" alt="${provider.Name}" class="provider-image">
+                        <h2>${provider.Name}</h2>
+                        <p class="location">📍 ${provider.Address}</p>
+                        <div class="rating">
+                            <span style="color: #f39c12; font-size: 1.5em;">${renderStars(avgRating)}</span>
+                            <span class="rating-number">${avgRating}</span>
+                            <span class="review-count">(${provider.Reviews.length} Reviews)</span>
+                        </div>
+                        <button class="see-more-btn" onclick="showDetails(${index})">View Details</button>
+                    </div>
+                `;
+                listContainer.innerHTML += cardHTML;
+            });
+        }
+
+        function showDetails(index) {
+            const provider = providers[index];
+            const modalDetails = document.getElementById('modalDetails');
+            const avgRating = getAverageRating(provider.Reviews);
+
+            const servicesTable = `
+                <div>
+                    <table class="service-table">
+                        <thead>
+                            <tr>
+                                <th style="width: 70%;">Service Description</th>
+                                <th style="width: 30%;">Price</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${provider.Services.map(s => `
+                                <tr>
+                                    <td>${s.service}</td>
+                                    <td>${s.price}</td>
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                    </table>
+                </div>
+            `;
+
+            const reviewsList = provider.Reviews.map(r => `
+                <div class="review-box">
+                    <div class="user-info">
+                        <span>👤 ${r.user}</span>
+                        <span class="review-rating">${renderStars(r.rating)} (${r.rating})</span>
+                    </div>
+                    <p>💬 ${r.comment}</p>
+                    <p class="review-date">${r.date}</p>
+                </div>
+            `).join('');
+
+            modalDetails.innerHTML = `
+                <div class="modal-header">
+                    <img src="${provider.Image}" alt="${provider.Name}" class="provider-image">
+                    <h2>${provider.Name}</h2>
+                    <p class="contact-info">📞 ${provider.PhoneNumber}</p>
+                    <p style="font-size: 1em;">📍 ${provider.Address} | Category: ${provider.Category}</p>
+                    <div class="rating" style="justify-content: center; font-size: 1.3em;">
+                        <span style="color: #f39c12; font-size: 1.8em;">${renderStars(avgRating)}</span>
+                        <span class="rating-number">${avgRating}</span>
+                        <span class="review-count">(${provider.Reviews.length} Reviews)</span>
+                    </div>
+                </div>
+
+                <div class="detail-section">
+                    <h3>✅ Price List & Services</h3>
+                    ${servicesTable}
+                </div>
+
+                <div class="detail-section">
+                    <h3>💬 Customer Feedback</h3>
+                    ${reviewsList.length > 0 ? reviewsList : '<p style="text-align: center;">No detailed feedback available yet.</p>'}
+                </div>
+            `;
+
+            document.getElementById('detailModal').style.display = 'block';
+        }
+
+        function closeModal() {
+            document.getElementById('detailModal').style.display = 'none';
+        }
+
+
+        function showContactModal() {
+            const contactDetails = document.getElementById('contactDetails');
+            const phoneNumber = '9876543210';
+            const whatsappNumber = '9876543210'; 
+
+            contactDetails.innerHTML = `
+                <h3>Contact Us</h3>
+                <a href="tel:+91${phoneNumber}" class="contact-link-modal phone-link">📞 कॉल करें: ${phoneNumber}</a>
+                <a href="https://wa.me/91${whatsappNumber}?text=Hello%20I%20need%20assistance%20with%20your%20services." target="_blank" class="contact-link-modal whatsapp-link">🟢 WhatsApp करें: ${whatsappNumber}</a>
+            `;
+            document.getElementById('contactModal').style.display = 'block';
+            
+            const navLinks = document.getElementById('navLinks');
+            if (navLinks.classList.contains('active')) {
+                navLinks.classList.remove('active');
+            }
+        }
+
+        function closeContactModal() {
+            document.getElementById('contactModal').style.display = 'none';
+        }
+
+        window.onclick = function(event) {
+            const detailModal = document.getElementById('detailModal');
+            const contactModal = document.getElementById('contactModal');
+
+            if (event.target === detailModal) {
+                closeModal();
+            }
+            if (event.target === contactModal) {
+                closeContactModal();
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', renderProviderList);
+    </script>
+</body>
+</html>
